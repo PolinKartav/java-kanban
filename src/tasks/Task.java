@@ -45,8 +45,8 @@ import manager.TaskManage;
      @Override
      public String toString() {
          String result = "";
-         result = " Название simple Task= '" + name + "', Описание= '" + description +
-                 "', Id simple Task= '" + id + "', Статус= '" + status + "'.";
+         result = " Название = '" + name + "', Описание= '" + description +
+                 "', Id = '" + id + "', Статус= '" + status + "'.";
          return result;
      }
  }

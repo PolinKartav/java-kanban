@@ -11,8 +11,7 @@ public class Subtask extends Task {
     @Override
     public String toString(){
         String result = "";
-        result = "Название Epic= '" + nameEpic + "'\t, Название Subtask= '" + getName() +"', Описание= '" +
-                getDescription() + "', id subtask= '" + getId() + "', Статус= '" + getStatus() + "'.";
+        result = "Epic: Название = '" + nameEpic + "', Subtask: '" +  super.toString() + "\n";
         return result;
     }
 }

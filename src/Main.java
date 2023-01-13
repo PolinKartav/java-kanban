@@ -29,39 +29,41 @@ public class Main {
         manager.saveAllTasks(epic2);
 
         //2.1
-        System.out.println(manager.getListOfAllTasks());
-
-        //2.2
-        manager.deleteTasks(manager.getListOfAllTasks());
+        System.out.println(2.1);
         System.out.println(manager.getListOfAllTasks());
 
         //2.3
+        System.out.println(2.3);
         System.out.println(manager.getTaskById(4));
         System.out.println(manager.getTaskById(1));
         System.out.println(manager.getTaskById(2));
         System.out.println(manager.getTaskById(3));
         System.out.println(manager.getTaskById(5));
 
-        //2.4
+        System.out.println("2.4");//2.4
         System.out.println(manager.createTask(task2));
 
-        //2.5
+        System.out.println("2.5");//2.5
         Subtask subtask3Epic1 = new Subtask("Похудеть", "Следить за диетой", "Не жрать после 4", status.getStatus3());
         manager.updateTasks(subtask3Epic1, 4);
         System.out.println(manager.getEpicSave());
         System.out.println(manager.getSubtaskSave());
 
 
-        //2.6
-        manager.removeTaskById(4);
-        System.out.println(manager.getEpicSave());
+        System.out.println("2.6");//2.6
+        manager.removeTaskById(1);
+        //System.out.println(manager.getEpicSave());
         System.out.println(manager.getListOfAllTasks());
 
-        //3.1
+        System.out.println(3.1);//3.1
         System.out.println(manager.getAllSubtsksOfEpic(5));
 
-        //4
+        System.out.println("4");//4
         manager.getStatusEpic();
         System.out.println(manager.getEpicSave());
+
+        //2.2
+        manager.deleteTasks(manager.getListOfAllTasks());
+        System.out.println(manager.getListOfAllTasks());
     }
 }

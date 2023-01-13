@@ -166,7 +166,13 @@ public class TaskManage {
     //3. Дополнительные методы:
     //3.1 Получение списка всех подзадач определённого эпика.
     public ArrayList<Subtask> getAllSubtsksOfEpic(int id){
+        if(epicSave.isEmpty()) {
+            return null;
+        }
         Epic epic = epicSave.get(id);
+        if(epic.subTasks.isEmpty()){
+            return null;
+        }
         return epic.subTasks;
     }
 
