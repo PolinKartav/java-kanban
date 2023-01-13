@@ -52,7 +52,7 @@ public class Main {
 
         System.out.println("2.6");//2.6
         manager.removeTaskById(1);
-        //System.out.println(manager.getEpicSave());
+        System.out.println(manager.getEpicSave());
         System.out.println(manager.getListOfAllTasks());
 
         System.out.println(3.1);//3.1
