@@ -1,18 +1,20 @@
 package tasks;
-import manager.TaskManage;
 
- public class Task {
+
+import manager.InMemoryTaskManager;
+
+public class Task {
      private String name;
      private String description;
      private int id;
-     private String status;
+     private StatusChoice status;
 
      //Конструктор для создания Task
-     public Task(String name, String description, String status) {
+     public Task(String name, String description, StatusChoice status) {
          this.name = name;
          this.description = description;
-         this.id = TaskManage.getId() + 1;
-         TaskManage.setId(this.id);
+         this.id = InMemoryTaskManager.getId() + 1;
+         InMemoryTaskManager.setId(this.id);
          this.status = status;
      }
 
@@ -20,8 +22,8 @@ import manager.TaskManage;
      public Task(String name, String description) {
          this.name = name;
          this.description = description;
-         this.id = TaskManage.getId() +1;
-         TaskManage.setId(this.id);
+         this.id = InMemoryTaskManager.getId() +1;
+         InMemoryTaskManager.setId(this.id);
      }
      public int getId() {
          return id;
@@ -35,11 +37,11 @@ import manager.TaskManage;
      public String getName() {
          return name;
      }
-     public String getStatus() {
+     public StatusChoice getStatus() {
         setStatus(status);
          return status;
      }
-    public void setStatus(String status){
+    public void setStatus(StatusChoice status){
         this.status = status;
     }
      @Override

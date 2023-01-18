@@ -5,18 +5,22 @@ import tasks.Subtask;
 import tasks.Task;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import tasks.StatusChoice;
 
-public class TaskManage {
+public class InMemoryTaskManager implements TaskManager{
     private static int ID = 0;
     HashMap<Integer, Task> taskSave = new HashMap<>();
     HashMap<Integer, Epic> epicSave = new HashMap<>();
     HashMap<Integer, Subtask> subtaskSave = new HashMap<>();
+    List<Task> listHistoryOfTasks = new ArrayList<>();
 
-    public static  int getId(){
+
+    public static int getId(){
         return ID;
     }
-     public static void setId(int id){
+    public static void setId(int id){
         ID = id;
     }
 
@@ -27,10 +31,12 @@ public class TaskManage {
         return epicSave;
     }
     public HashMap<Integer, Subtask> getSubtaskSave(){
+
         return subtaskSave;
     }
 
     //1. Метод для хранения всех задач
+    @Override
     public void saveAllTasks(Object o){
         if(o instanceof Epic){
             epicSave.put(((Epic) o).getId(), (Epic) o);
@@ -44,6 +50,7 @@ public class TaskManage {
     }
 
     //2.1 Получение списка всех задач.
+    @Override
     public ArrayList<Object> getListOfAllTasks(){
         ArrayList<Object> allTasks = new ArrayList();
         allTasks.add(taskSave);
@@ -53,6 +60,7 @@ public class TaskManage {
     }
 
     //2.2 Удаление всех задач;
+    @Override
     public void deleteTasks(ArrayList<Object> list){
         list.clear();
         taskSave.clear();
@@ -61,22 +69,27 @@ public class TaskManage {
     }
 
     //2.3 Получение по идентификатору;
+    @Override
     public Object getTaskById(int id){
         Object taskById = null;
 
         if (taskSave.get(id) != null){
             taskById = taskSave.get(id);
+            listHistoryOfTasks.add((Task) taskById);
         }
         else if (epicSave.get(id) != null){
             taskById = epicSave.get(id);
+            listHistoryOfTasks.add((Task) taskById);
         }
         else if (subtaskSave.get(id) != null){
             taskById = subtaskSave.get(id);
+            listHistoryOfTasks.add((Task) taskById);
         }
         return taskById;
     }
 
     //2.4 Создание. Сам объект должен передаваться в качестве параметра;
+    @Override
     public Object createTask(Object o){
         if(o instanceof Epic){
             Epic epic = (Epic) o;
@@ -94,6 +107,7 @@ public class TaskManage {
     }
 
     //2.5 Обновление. Новая версия объекта с верным идентификатором передаются в виде параметра;
+    @Override
     public void updateTasks(Object o, int id){
         if(o instanceof Epic){
             Epic epic = (Epic) o;
@@ -113,7 +127,8 @@ public class TaskManage {
         }
     }
     //обновление Subtasks в Epic
-    private void updateSubtaskInEpic(Subtask subtask, int id){
+    @Override
+    public void updateSubtaskInEpic(Subtask subtask, int id){
         for(Map.Entry<Integer, Epic> entry : epicSave.entrySet()){
             Epic ep = entry.getValue();
             for (int i = 0; i < ep.subTasks.size();i++) {
@@ -128,6 +143,7 @@ public class TaskManage {
     }
 
     //2.6 Удаление по идентификатору.
+    @Override
     public void removeTaskById(Integer id){
         for (Object taskId: taskSave.keySet()){
             if(id == taskId){
@@ -150,7 +166,8 @@ public class TaskManage {
         }
     }
     //удаление Subtasks в Epic
-    private void removeSubtasksInEpic(int id){
+    @Override
+    public void removeSubtasksInEpic(int id){
         for(Map.Entry<Integer, Epic> entry : epicSave.entrySet()){
             Epic ep = entry.getValue();
             for (int i = 0; i < ep.subTasks.size();i++) {
@@ -165,6 +182,7 @@ public class TaskManage {
 
     //3. Дополнительные методы:
     //3.1 Получение списка всех подзадач определённого эпика.
+    @Override
     public ArrayList<Subtask> getAllSubtsksOfEpic(int id){
         if(epicSave.isEmpty()) {
             return null;
@@ -177,6 +195,7 @@ public class TaskManage {
     }
 
     //4. Метод для управления статусом для эпик задач.
+    @Override
     public void getStatusEpic(){
         int newC = 0;
         int doneC = 0;
@@ -185,29 +204,45 @@ public class TaskManage {
             Epic ep = entry.getValue();
 
             if(ep.subTasks.isEmpty()){
-                ep.setStatus("NEW");
+                ep.setStatus(StatusChoice.NEW);
                 epicSave.put(entry.getKey(), ep);
                 return;
             }
 
             for (int i = 0; i < ep.subTasks.size(); i++) {
-                if(ep.subTasks.get(i).getStatus() == "NEW") {
+                if(ep.subTasks.get(i).getStatus() == StatusChoice.NEW) {
                     newC++;
                 }
-                else if(ep.subTasks.get(i).getStatus() == "DONE") {
+                else if(ep.subTasks.get(i).getStatus() == StatusChoice.DONE) {
                     doneC++;
                 }
-                }
+            }
             if(newC == ep.subTasks.size()) {
-                ep.setStatus("NEW");
+                ep.setStatus(StatusChoice.NEW);
             }
             else if(doneC == ep.subTasks.size()) {
-                ep.setStatus("DONE");
+                ep.setStatus(StatusChoice.DONE);
             }
-            else ep.setStatus("IN_PROGRESS");
+            else ep.setStatus(StatusChoice.IN_PROGRESS);
             epicSave.put(entry.getKey(), ep);
-            }
+        }
     }
     /*Если у эпика нет подзадач или все они имеют статус NEW | DONE, то статус должен быть NEW | DONE.
     Во всех остальных случаях статус должен быть IN_PROGRESS.*/
+
+    //5(new).возвращать последние 10 просмотренных задач
+    @Override
+    public List<Task>  getHistory(){
+        int size = listHistoryOfTasks.size();
+        System.out.println(size);
+        if(size <=10){
+            return listHistoryOfTasks;
+        }
+        else {
+            for(int i = 0; i < size-10; i++){
+                listHistoryOfTasks.remove(0);
+            }
+            return listHistoryOfTasks;
+        }
+    }
 }

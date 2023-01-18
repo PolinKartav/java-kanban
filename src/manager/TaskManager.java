@@ -1,8 +1,10 @@
 package manager;
 
 import tasks.Subtask;
+import tasks.Task;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface TaskManager {
     //1. Метод для хранения всех задач
@@ -38,4 +40,7 @@ public interface TaskManager {
 
     //4. Метод для управления статусом для эпик задач.
     void getStatusEpic();
+
+    //5(new).возвращать последние 10 просмотренных задач
+    List<Task> getHistory();
 }
