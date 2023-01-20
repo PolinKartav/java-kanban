@@ -1,23 +1,25 @@
 package manager;
 
-import tasks.Epic;
-import tasks.Subtask;
-import tasks.Task;
+import tasks.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import tasks.StatusChoice;
+
+import static manager.Managers.getDefaultHistory;
 
 public class InMemoryTaskManager implements TaskManager{
     private static int ID = 0;
     HashMap<Integer, Task> taskSave = new HashMap<>();
     HashMap<Integer, Epic> epicSave = new HashMap<>();
     HashMap<Integer, Subtask> subtaskSave = new HashMap<>();
-    List<Task> listHistoryOfTasks = new ArrayList<>();
+    //public List<Task> listHistoryOfTasks = new ArrayList<>();
+
+    HistoryManager managerHistory;
 
 
     public static int getId(){
+
         return ID;
     }
     public static void setId(int id){
@@ -37,7 +39,7 @@ public class InMemoryTaskManager implements TaskManager{
 
     //1. Метод для хранения всех задач
     @Override
-    public void saveAllTasks(Object o){
+    public void saveAllTasks(Task o){
         if(o instanceof Epic){
             epicSave.put(((Epic) o).getId(), (Epic) o);
         }
@@ -70,27 +72,31 @@ public class InMemoryTaskManager implements TaskManager{
 
     //2.3 Получение по идентификатору;
     @Override
-    public Object getTaskById(int id){
-        Object taskById = null;
+    public Task getTaskById(int id){
+        managerHistory = getDefaultHistory();
+        Task taskById = null;
 
         if (taskSave.get(id) != null){
             taskById = taskSave.get(id);
-            listHistoryOfTasks.add((Task) taskById);
+            managerHistory.add(taskById);
+            //listHistoryOfTasks.add((Task) taskById);
         }
         else if (epicSave.get(id) != null){
             taskById = epicSave.get(id);
-            listHistoryOfTasks.add((Task) taskById);
+            managerHistory.add( taskById);
+            //listHistoryOfTasks.add((Task) taskById);
         }
         else if (subtaskSave.get(id) != null){
             taskById = subtaskSave.get(id);
-            listHistoryOfTasks.add((Task) taskById);
+            managerHistory.add(taskById);
+            //listHistoryOfTasks.add((Task) taskById);
         }
         return taskById;
     }
 
     //2.4 Создание. Сам объект должен передаваться в качестве параметра;
     @Override
-    public Object createTask(Object o){
+    public Task createTask(Task o){
         if(o instanceof Epic){
             Epic epic = (Epic) o;
             return epic;
@@ -108,7 +114,7 @@ public class InMemoryTaskManager implements TaskManager{
 
     //2.5 Обновление. Новая версия объекта с верным идентификатором передаются в виде параметра;
     @Override
-    public void updateTasks(Object o, int id){
+    public void updateTasks(Task o, int id){
         if(o instanceof Epic){
             Epic epic = (Epic) o;
             epic.setId(id);
@@ -232,17 +238,7 @@ public class InMemoryTaskManager implements TaskManager{
 
     //5(new).возвращать последние 10 просмотренных задач
     @Override
-    public List<Task>  getHistory(){
-        int size = listHistoryOfTasks.size();
-        System.out.println(size);
-        if(size <=10){
-            return listHistoryOfTasks;
-        }
-        else {
-            for(int i = 0; i < size-10; i++){
-                listHistoryOfTasks.remove(0);
-            }
-            return listHistoryOfTasks;
-        }
+    public List<Task> getHistory(){
+        return managerHistory.getHistoryTasks();
     }
 }

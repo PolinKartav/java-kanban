@@ -2,13 +2,12 @@ package manager;
 
 import tasks.Subtask;
 import tasks.Task;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public interface TaskManager {
     //1. Метод для хранения всех задач
-    void saveAllTasks(Object o);
+    void saveAllTasks(Task o);
 
     //2.1 Получение списка всех задач.
     ArrayList<Object> getListOfAllTasks();
@@ -17,13 +16,13 @@ public interface TaskManager {
     void deleteTasks(ArrayList<Object> list);
 
     //2.3 Получение по идентификатору;
-    Object getTaskById(int id);
+    Task getTaskById(int id);
 
     //2.4 Создание. Сам объект должен передаваться в качестве параметра;
-    Object createTask(Object o);
+    Task createTask(Task o);
 
     //2.5 Обновление. Новая версия объекта с верным идентификатором передаются в виде параметра;
-    void updateTasks(Object o, int id);
+    void updateTasks(Task o, int id);
 
     //обновление Subtasks в Epic
      void updateSubtaskInEpic(Subtask subtask, int id);

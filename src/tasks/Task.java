@@ -1,6 +1,5 @@
 package tasks;
 
-
 import manager.InMemoryTaskManager;
 
 public class Task {
@@ -8,6 +7,8 @@ public class Task {
      private String description;
      private int id;
      private StatusChoice status;
+     private String type = "Task";
+
 
      //Конструктор для создания Task
      public Task(String name, String description, StatusChoice status) {
@@ -44,12 +45,17 @@ public class Task {
     public void setStatus(StatusChoice status){
         this.status = status;
     }
+
+    String getType(){
+        return type;
+    }
+
      @Override
      public String toString() {
          String result = "";
-         result = " Название = '" + name + "', Описание= '" + description +
+         result =  getType() +":" +" Название = '" + name + "', Описание= '" + description +
                  "', Id = '" + id + "', Статус= '" + status + "'.";
-         return result;
+         return   result;
      }
  }
 

@@ -39,6 +39,8 @@ public class Main {
         System.out.println(manager.getTaskById(4));
         System.out.println(manager.getTaskById(5));
 
+        System.out.println(manager.getHistory());
+
 
         ////5(new).
         System.out.println("5.");
@@ -47,6 +49,15 @@ public class Main {
         //2.4
         System.out.println("2.4");
         System.out.println(manager.createTask(task2));
+
+
+        //Ваш пример при проверки: не сохранялось, потому что task не был сохранен
+        Task task22 = (Task) manager.createTask(task1);
+        System.out.println(task22);
+        manager.saveAllTasks(task22);
+        manager.getTaskById(task22.getId());
+        System.out.println("!!!!!!!!!!");
+        System.out.println(manager.getHistory());
 
         //2.5
         System.out.println("2.5");
