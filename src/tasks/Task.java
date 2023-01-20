@@ -14,8 +14,6 @@ public class Task {
      public Task(String name, String description, StatusChoice status) {
          this.name = name;
          this.description = description;
-         this.id = InMemoryTaskManager.getId() + 1;
-         InMemoryTaskManager.setId(this.id);
          this.status = status;
      }
 
@@ -23,8 +21,7 @@ public class Task {
      public Task(String name, String description) {
          this.name = name;
          this.description = description;
-         this.id = InMemoryTaskManager.getId() +1;
-         InMemoryTaskManager.setId(this.id);
+
      }
      public int getId() {
          return id;

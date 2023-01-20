@@ -39,37 +39,24 @@ public class Main {
         System.out.println(manager.getTaskById(4));
         System.out.println(manager.getTaskById(5));
 
-        System.out.println(manager.getHistory());
-
-
         ////5(new).
-        System.out.println("5.");
+        System.out.println(5.);
         System.out.println(manager.getHistory());
 
         //2.4
-        System.out.println("2.4");
+        System.out.println(2.4);
         System.out.println(manager.createTask(task2));
 
-
-        //Ваш пример при проверки: не сохранялось, потому что task не был сохранен
-        Task task22 = (Task) manager.createTask(task1);
-        System.out.println(task22);
-        manager.saveAllTasks(task22);
-        manager.getTaskById(task22.getId());
-        System.out.println("!!!!!!!!!!");
-        System.out.println(manager.getHistory());
-
         //2.5
-        System.out.println("2.5");
-        Subtask subtask3Epic1 = new Subtask("Похудеть", "Следить за диетой", "Не жрать после 4", StatusChoice.DONE);
+        System.out.println(2.5);
+        Subtask subtask3Epic1 = new Subtask("Похудеть", "Следить за диетой", "Кушать больше фруктов", StatusChoice.DONE);
         manager.updateTasks(subtask3Epic1, 4);
-        System.out.println(manager.getEpicSave());
-        System.out.println(manager.getSubtaskSave());
+
+
 
         //2.6
-        System.out.println("2.6");
+        System.out.println(2.6);
         manager.removeTaskById(1);
-        System.out.println(manager.getEpicSave());
         System.out.println(manager.getListOfAllTasks());
 
         //3.1
@@ -77,9 +64,9 @@ public class Main {
         System.out.println(manager.getAllSubtsksOfEpic(5));
 
         //4
-        System.out.println("4");
+        System.out.println(4);
         manager.getStatusEpic();
-        System.out.println(manager.getEpicSave());
+
 
         //2.2
         manager.deleteTasks(manager.getListOfAllTasks());

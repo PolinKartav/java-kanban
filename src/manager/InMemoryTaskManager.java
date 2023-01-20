@@ -9,45 +9,47 @@ import java.util.Map;
 import static manager.Managers.getDefaultHistory;
 
 public class InMemoryTaskManager implements TaskManager{
-    private static int ID = 0;
+    private static int iD = 1;
     HashMap<Integer, Task> taskSave = new HashMap<>();
     HashMap<Integer, Epic> epicSave = new HashMap<>();
     HashMap<Integer, Subtask> subtaskSave = new HashMap<>();
-    //public List<Task> listHistoryOfTasks = new ArrayList<>();
-
     HistoryManager managerHistory;
 
-
     public static int getId(){
-
-        return ID;
+        return iD;
     }
-    public static void setId(int id){
-        ID = id;
+   private static void setId(int id){
+        iD = id;
     }
 
-    public HashMap<Integer, Task> getTaskSave(){
+    private HashMap<Integer, Task> getTaskSave(){
         return taskSave;
     }
-    public HashMap<Integer, Epic> getEpicSave(){
+    private HashMap<Integer, Epic> getEpicSave(){
         return epicSave;
     }
-    public HashMap<Integer, Subtask> getSubtaskSave(){
-
+    private HashMap<Integer, Subtask> getSubtaskSave(){
         return subtaskSave;
     }
 
     //1. Метод для хранения всех задач
     @Override
     public void saveAllTasks(Task o){
+
         if(o instanceof Epic){
-            epicSave.put(((Epic) o).getId(), (Epic) o);
+            o.setId(this.iD);
+            epicSave.put(this.iD, (Epic) o);
+            this.iD++;
         }
         else if(o instanceof Subtask){
+            o.setId(this.iD);
             subtaskSave.put(((Subtask) o).getId(), (Subtask) o);
+            this.iD++;
         }
         else if(o instanceof Task){
+            o.setId(this.iD);
             taskSave.put(((Task) o).getId(), (Task) o);
+            this.iD++;
         }
     }
 
@@ -79,17 +81,14 @@ public class InMemoryTaskManager implements TaskManager{
         if (taskSave.get(id) != null){
             taskById = taskSave.get(id);
             managerHistory.add(taskById);
-            //listHistoryOfTasks.add((Task) taskById);
         }
         else if (epicSave.get(id) != null){
             taskById = epicSave.get(id);
             managerHistory.add( taskById);
-            //listHistoryOfTasks.add((Task) taskById);
         }
         else if (subtaskSave.get(id) != null){
             taskById = subtaskSave.get(id);
             managerHistory.add(taskById);
-            //listHistoryOfTasks.add((Task) taskById);
         }
         return taskById;
     }
