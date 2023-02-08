@@ -1,12 +1,16 @@
 package tasks;
 
 public class Subtask extends Task {
-    private String nameEpic;
+    private Integer parentEpicId;
     String type = "Subtask";
-    public Subtask(String nameEpic, String nameSubtask, String descriptionSubtask,
+    public Subtask(Integer parentEpicId, String nameSubtask, String descriptionSubtask,
                    StatusChoice statusSubtask){
         super(nameSubtask, descriptionSubtask, statusSubtask);
-        this.nameEpic = nameEpic;
+        this.parentEpicId = parentEpicId;
+    }
+
+    public Integer getParentEpicId() {
+        return parentEpicId;
     }
 
     @Override
@@ -17,7 +21,7 @@ public class Subtask extends Task {
     @Override
     public String toString(){
         String result = "";
-        result = "Epic: Название = '" + nameEpic + "', " +  super.toString() + "\n";
+        result = "Id of the Epic: " + parentEpicId + "', " +  super.toString() + "\n";
         return result;
     }
 }

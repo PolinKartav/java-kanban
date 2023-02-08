@@ -6,15 +6,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static manager.Managers.getDefaultHistory;
-
 public class InMemoryTaskManager implements TaskManager{
     private static int iD = 1;
-    HashMap<Integer, Task> taskSave = new HashMap<>();
-    HashMap<Integer, Epic> epicSave = new HashMap<>();
-    HashMap<Integer, Subtask> subtaskSave = new HashMap<>();
-    HistoryManager managerHistory;
+    Map<Integer, Task> taskSave;
+    Map<Integer, Epic> epicSave;
+    Map<Integer, Subtask> subtaskSave;
 
+    //HistoryManager managerHistory;
+    public InMemoryHistoryManager historyManager;
+    public InMemoryTaskManager(){
+        taskSave = new HashMap<>();
+        epicSave = new HashMap<>();
+        subtaskSave = new HashMap<>();
+        historyManager = new InMemoryHistoryManager();
+    }
     public static int getId(){
         return iD;
     }
@@ -22,19 +27,19 @@ public class InMemoryTaskManager implements TaskManager{
         iD = id;
     }
 
-    private HashMap<Integer, Task> getTaskSave(){
+    private Map<Integer, Task> getTaskSave(){
         return taskSave;
     }
-    private HashMap<Integer, Epic> getEpicSave(){
+    private Map<Integer, Epic> getEpicSave(){
         return epicSave;
     }
-    private HashMap<Integer, Subtask> getSubtaskSave(){
+    private Map<Integer, Subtask> getSubtaskSave(){
         return subtaskSave;
     }
 
-    //1. Метод для хранения всех задач
+    //1. Сохрание любой наски в нужную HashMap
     @Override
-    public void saveAllTasks(Task o){
+    public void saveAnyTask(Task o){
 
         if(o instanceof Epic){
             o.setId(this.iD);
@@ -57,6 +62,7 @@ public class InMemoryTaskManager implements TaskManager{
     @Override
     public ArrayList<Object> getListOfAllTasks(){
         ArrayList<Object> allTasks = new ArrayList();
+
         allTasks.add(taskSave);
         allTasks.add(epicSave);
         allTasks.add(subtaskSave);
@@ -66,6 +72,7 @@ public class InMemoryTaskManager implements TaskManager{
     //2.2 Удаление всех задач;
     @Override
     public void deleteTasks(ArrayList<Object> list){
+
         list.clear();
         taskSave.clear();
         epicSave.clear();
@@ -75,20 +82,19 @@ public class InMemoryTaskManager implements TaskManager{
     //2.3 Получение по идентификатору;
     @Override
     public Task getTaskById(int id){
-        managerHistory = getDefaultHistory();
         Task taskById = null;
 
         if (taskSave.get(id) != null){
             taskById = taskSave.get(id);
-            managerHistory.add(taskById);
+            historyManager.add(taskById);
         }
         else if (epicSave.get(id) != null){
             taskById = epicSave.get(id);
-            managerHistory.add( taskById);
+            historyManager.add(taskById);
         }
         else if (subtaskSave.get(id) != null){
             taskById = subtaskSave.get(id);
-            managerHistory.add(taskById);
+            historyManager.add(taskById);
         }
         return taskById;
     }
@@ -96,6 +102,7 @@ public class InMemoryTaskManager implements TaskManager{
     //2.4 Создание. Сам объект должен передаваться в качестве параметра;
     @Override
     public Task createTask(Task o){
+
         if(o instanceof Epic){
             Epic epic = (Epic) o;
             return epic;
@@ -114,6 +121,7 @@ public class InMemoryTaskManager implements TaskManager{
     //2.5 Обновление. Новая версия объекта с верным идентификатором передаются в виде параметра;
     @Override
     public void updateTasks(Task o, int id){
+
         if(o instanceof Epic){
             Epic epic = (Epic) o;
             epic.setId(id);
@@ -134,6 +142,7 @@ public class InMemoryTaskManager implements TaskManager{
     //обновление Subtasks в Epic
     @Override
     public void updateSubtaskInEpic(Subtask subtask, int id){
+
         for(Map.Entry<Integer, Epic> entry : epicSave.entrySet()){
             Epic ep = entry.getValue();
             for (int i = 0; i < ep.subTasks.size();i++) {
@@ -150,37 +159,34 @@ public class InMemoryTaskManager implements TaskManager{
     //2.6 Удаление по идентификатору.
     @Override
     public void removeTaskById(Integer id){
-        for (Object taskId: taskSave.keySet()){
-            if(id == taskId){
+
+            if(taskSave.containsKey(id)){
+                historyManager.remove(taskSave.get(id));
                 taskSave.remove(id);
-                break;
             }
-        }
-        for (Object taskId : epicSave.keySet()){
-            if(id == taskId){
+
+            if(epicSave.containsKey(id)){
+                historyManager.remove(epicSave.get(id));
+                removeAllSubtasksInEpic(id);
                 epicSave.remove(id);
-                break;
             }
-        }
-        for (Object taskId: subtaskSave.keySet()){
-            if(id == taskId){
+
+            if(subtaskSave.containsKey(id)){
+                epicSave.get(subtaskSave.get(id).getParentEpicId()).deleteSubtask(subtaskSave.get(id));
+                historyManager.remove(subtaskSave.get(id));
                 subtaskSave.remove(id);
-                removeSubtasksInEpic(id);
-                break;
             }
-        }
     }
-    //удаление Subtasks в Epic
-    @Override
-    public void removeSubtasksInEpic(int id){
-        for(Map.Entry<Integer, Epic> entry : epicSave.entrySet()){
-            Epic ep = entry.getValue();
-            for (int i = 0; i < ep.subTasks.size();i++) {
-                if (ep.subTasks.get(i).getId() == id) {
-                    ep.subTasks.remove(i);
-                    epicSave.put(entry.getKey(),ep);
-                    return;
-                }
+
+    public void removeAllSubtasksInEpic(int id){
+
+        List<Subtask> tasks = epicSave.get(id).subTasks;
+        int i = 0;
+        if(tasks.isEmpty()){
+            return;
+        } else {
+            while(!tasks.isEmpty()){
+                removeTaskById(tasks.get(0).getId());
             }
         }
     }
@@ -189,14 +195,15 @@ public class InMemoryTaskManager implements TaskManager{
     //3.1 Получение списка всех подзадач определённого эпика.
     @Override
     public ArrayList<Subtask> getAllSubtsksOfEpic(int id){
-        if(epicSave.isEmpty()) {
-            return null;
-        }
-        Epic epic = epicSave.get(id);
-        if(epic.subTasks.isEmpty()){
-            return null;
-        }
-        return epic.subTasks;
+
+        if(epicSave.containsKey(id)){
+            if(!epicSave.isEmpty()) {
+                Epic epic = epicSave.get(id);
+                if (!epic.subTasks.isEmpty()) {
+                    return epic.subTasks;
+                }else return null;
+            }else return null;
+        }else return null;
     }
 
     //4. Метод для управления статусом для эпик задач.
@@ -238,6 +245,7 @@ public class InMemoryTaskManager implements TaskManager{
     //5(new).возвращать последние 10 просмотренных задач
     @Override
     public List<Task> getHistory(){
-        return managerHistory.getHistoryTasks();
+
+        return historyManager.getHistoryTasks();
     }
 }

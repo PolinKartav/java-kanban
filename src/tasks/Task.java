@@ -1,7 +1,5 @@
 package tasks;
 
-import manager.InMemoryTaskManager;
-
 public class Task {
      private String name;
      private String description;

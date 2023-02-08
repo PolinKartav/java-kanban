@@ -6,16 +6,20 @@ public class Epic extends Task {
     public ArrayList<Subtask> subTasks;
     String type = "Epic";
 
-    //конструктор Epic c Subtasks
-    public Epic(String nameEpic, String descriptionEpic, ArrayList<Subtask> subTask){
-        super(nameEpic, descriptionEpic);
-        this.subTasks = subTask;
-    }
-
-    //конструктор Epic без Subtasks
+    //конструктор Epic
     public Epic(String nameEpic, String descriptionEpic){
         super(nameEpic, descriptionEpic);
-        subTasks = new ArrayList<>();
+        subTasks = new ArrayList<Subtask>();
+        //this.subTasks = subTask;
+    }
+
+    //созранение подзадач в список
+    public void saveSubtasksInList(Subtask task){
+        subTasks.add(task);
+    }
+
+    public void deleteSubtask(Subtask task) {
+        subTasks.remove(task);
     }
     @Override
     String getType(){

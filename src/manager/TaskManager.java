@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface TaskManager {
     //1. Метод для хранения всех задач
-    void saveAllTasks(Task o);
+    void saveAnyTask(Task o);
 
     //2.1 Получение списка всех задач.
     ArrayList<Object> getListOfAllTasks();
@@ -29,9 +29,6 @@ public interface TaskManager {
 
     //2.6 Удаление по идентификатору.
     void removeTaskById(Integer id);
-
-    //удаление Subtasks в Epic
-    void removeSubtasksInEpic(int id);
 
     //3. Дополнительные методы:
     //3.1 Получение списка всех подзадач определённого эпика.
