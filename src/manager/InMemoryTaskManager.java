@@ -12,7 +12,6 @@ public class InMemoryTaskManager implements TaskManager{
     Map<Integer, Epic> epicSave;
     Map<Integer, Subtask> subtaskSave;
 
-    //HistoryManager managerHistory;
     public InMemoryHistoryManager historyManager;
     public InMemoryTaskManager(){
         taskSave = new HashMap<>();
@@ -23,60 +22,55 @@ public class InMemoryTaskManager implements TaskManager{
     public static int getId(){
         return iD;
     }
-   private static void setId(int id){
-        iD = id;
-    }
-
-    private Map<Integer, Task> getTaskSave(){
-        return taskSave;
-    }
-    private Map<Integer, Epic> getEpicSave(){
-        return epicSave;
-    }
-    private Map<Integer, Subtask> getSubtaskSave(){
-        return subtaskSave;
-    }
 
     //1. Сохрание любой наски в нужную HashMap
+    //2.4 Создание. Сам объект должен передаваться в качестве параметра;
     @Override
     public void saveAnyTask(Task o){
 
         if(o instanceof Epic){
             o.setId(this.iD);
             epicSave.put(this.iD, (Epic) o);
-            this.iD++;
+            iD++;
         }
         else if(o instanceof Subtask){
             o.setId(this.iD);
             subtaskSave.put(((Subtask) o).getId(), (Subtask) o);
-            this.iD++;
+            iD++;
         }
         else if(o instanceof Task){
             o.setId(this.iD);
             taskSave.put(((Task) o).getId(), (Task) o);
-            this.iD++;
+            iD++;
         }
     }
 
     //2.1 Получение списка всех задач.
     @Override
     public ArrayList<Object> getListOfAllTasks(){
-        ArrayList<Object> allTasks = new ArrayList();
+        ArrayList<Object> allTasks = new ArrayList<>();
 
-        allTasks.add(taskSave);
-        allTasks.add(epicSave);
-        allTasks.add(subtaskSave);
-        return allTasks;
+        if(!taskSave.isEmpty()){
+            allTasks.add(taskSave);
+        }
+        if(!epicSave.isEmpty()) {
+            allTasks.add(epicSave);
+        }
+        if(!subtaskSave.isEmpty()) {
+            allTasks.add(subtaskSave);
+        }
+        if(!allTasks.isEmpty()){
+            return allTasks;
+        }else return null;
     }
 
     //2.2 Удаление всех задач;
     @Override
-    public void deleteTasks(ArrayList<Object> list){
-
-        list.clear();
-        taskSave.clear();
-        epicSave.clear();
-        subtaskSave.clear();
+    public void deleteAllTasks(ArrayList<Object> list){
+            list.clear();
+            taskSave.clear();
+            epicSave.clear();
+            subtaskSave.clear();
     }
 
     //2.3 Получение по идентификатору;
@@ -97,25 +91,6 @@ public class InMemoryTaskManager implements TaskManager{
             historyManager.add(taskById);
         }
         return taskById;
-    }
-
-    //2.4 Создание. Сам объект должен передаваться в качестве параметра;
-    @Override
-    public Task createTask(Task o){
-
-        if(o instanceof Epic){
-            Epic epic = (Epic) o;
-            return epic;
-        }
-        else if(o instanceof Subtask){
-            Subtask subtask = (Subtask) o;
-            return subtask;
-        }
-        else if(o instanceof Task){
-            Task task = (Task) o;
-            return task;
-        }
-        else return null;
     }
 
     //2.5 Обновление. Новая версия объекта с верным идентификатором передаются в виде параметра;
@@ -181,7 +156,6 @@ public class InMemoryTaskManager implements TaskManager{
     public void removeAllSubtasksInEpic(int id){
 
         List<Subtask> tasks = epicSave.get(id).subTasks;
-        int i = 0;
         if(tasks.isEmpty()){
             return;
         } else {
@@ -242,10 +216,15 @@ public class InMemoryTaskManager implements TaskManager{
     /*Если у эпика нет подзадач или все они имеют статус NEW | DONE, то статус должен быть NEW | DONE.
     Во всех остальных случаях статус должен быть IN_PROGRESS.*/
 
-    //5(new).возвращать последние 10 просмотренных задач
+    //5.возвращать историю просмотра задач
     @Override
     public List<Task> getHistory(){
 
         return historyManager.getHistoryTasks();
+    }
+
+    @Override
+    public void saveSubtasksInEpic(Epic epic, Subtask task){
+        epic.saveSubtasksInList(task);
     }
 }

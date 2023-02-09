@@ -1,11 +1,12 @@
 import manager.InMemoryTaskManager;
+import manager.Managers;
 import tasks.Epic;
 import tasks.StatusChoice;
 import tasks.Subtask;
 import tasks.Task;
 public class Main {
     public static void main(String[] args) {
-        InMemoryTaskManager manager = new InMemoryTaskManager();
+        InMemoryTaskManager manager = (InMemoryTaskManager) Managers.getDefault();
 
         Task task1 = new Task("Relax", "Go to bed and sleep", StatusChoice.DONE);
         Task task2 = new Task("Having fun", "Meet with friends", StatusChoice.NEW);
@@ -15,6 +16,7 @@ public class Main {
         Epic epic2 = new Epic ("Бросить курить", "Да просто не курить");
         manager.saveAnyTask(epic1);
         manager.saveAnyTask(epic2);
+
         //creation 3 subtasks of the  first epic
         Subtask subtask1Epic1 = new Subtask(epic1.getId(), "Заняться спортом", "Делать зарядку", StatusChoice.DONE);
         Subtask subtask2Epic1 = new Subtask(epic1.getId(), "Следить за диетой", "Не жрать после 6", StatusChoice.IN_PROGRESS);
@@ -23,9 +25,10 @@ public class Main {
         manager.saveAnyTask(subtask2Epic1);
         manager.saveAnyTask(subtask4Epic1);
 
-        epic1.saveSubtasksInList(subtask1Epic1);
-        epic1.saveSubtasksInList(subtask2Epic1);
-        epic1.saveSubtasksInList(subtask4Epic1);
+        //save Subtasks in List of the Epic
+        manager.saveSubtasksInEpic(epic1,subtask1Epic1);
+        manager.saveSubtasksInEpic(epic1,subtask2Epic1);
+        manager.saveSubtasksInEpic(epic1,subtask4Epic1);
 
         //2.1
         System.out.println(2.1);
@@ -50,10 +53,6 @@ public class Main {
         manager.removeTaskById(1);
         System.out.println(manager.getHistory());
 
-        //2.4 create an object
-        System.out.println(2.4);
-        System.out.println(manager.createTask(task2));
-
         //2.5 update the object
         System.out.println(2.5);
         Subtask subtask3Epic1 = new Subtask(epic1.getId(), "Следить за диетой", "Кушать больше фруктов", StatusChoice.DONE);
@@ -74,7 +73,7 @@ public class Main {
 
         //2.2
         System.out.println(2.2);
-        manager.deleteTasks(manager.getListOfAllTasks());
+        manager.deleteAllTasks(manager.getListOfAllTasks());
         System.out.println(manager.getListOfAllTasks());
     }
 }

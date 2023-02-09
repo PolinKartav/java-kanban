@@ -10,10 +10,9 @@ public class Epic extends Task {
     public Epic(String nameEpic, String descriptionEpic){
         super(nameEpic, descriptionEpic);
         subTasks = new ArrayList<Subtask>();
-        //this.subTasks = subTask;
     }
 
-    //созранение подзадач в список
+    //сохранение подзадач в список
     public void saveSubtasksInList(Subtask task){
         subTasks.add(task);
     }
