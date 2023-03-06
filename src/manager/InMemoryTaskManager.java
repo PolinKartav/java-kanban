@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
-    protected int iD;
+    //protected int iD;
     Map<Integer, Task> taskSave;
     Map<Integer, Epic> epicSave;
     Map<Integer, Subtask> subtaskSave;
@@ -22,9 +22,9 @@ public class InMemoryTaskManager implements TaskManager {
         historyManager = new InMemoryHistoryManager();
     }
 
-    public int getId() {
+    /*public int getId() {
         return iD;
-    }
+    }*/
 
     //1. Сохрание любой наски в нужную HashMap
     //2.4 Создание. Сам объект должен передаваться в качестве параметра;
@@ -32,17 +32,11 @@ public class InMemoryTaskManager implements TaskManager {
     public void saveAnyTask(Task o) {
 
         if (o instanceof Epic) {
-            o.setId(this.iD);
-            epicSave.put(this.iD, (Epic) o);
-            iD++;
+            epicSave.put(o.getId(), (Epic) o);
         } else if (o instanceof Subtask) {
-            o.setId(this.iD);
             subtaskSave.put(((Subtask) o).getId(), (Subtask) o);
-            iD++;
         } else if (o instanceof Task) {
-            o.setId(this.iD);
             taskSave.put(((Task) o).getId(), (Task) o);
-            iD++;
         }
     }
 

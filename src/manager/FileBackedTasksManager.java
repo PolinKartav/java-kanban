@@ -29,9 +29,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         }
 
         try (BufferedWriter bw = new BufferedWriter(
-                new FileWriter(path.toAbsolutePath().toString(), StandardCharsets.UTF_8))) {
+                new FileWriter(path.toAbsolutePath().toString(), StandardCharsets.UTF_8))){
             bw.write("id,type,name,description,status,epic");
-            if (!super.getListOfAllTasks().isEmpty()) {
+            if (super.getListOfAllTasks() != null) {
                 bw.newLine();
 
                 for (Task task : getListOfAllTasks()) {
@@ -41,12 +41,14 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 bw.newLine();
 
                 List<Task> list = super.getHistory();
-                List<Integer> lisId = new ArrayList<>();
+                List<String> listId = new ArrayList<>();
                 for (Task task : list) {
-                    lisId.add(task.getId());
+                    listId.add(Integer.toString(task.getId()));
                 }
-                bw.write(String.join(",", lisId.toArray(new String[0])));
+                bw.write(String.join(",", listId));
 
+            } else {
+                System.out.println("Список пуст");
             }
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка записи файла");
@@ -108,19 +110,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 }
 
             }
-            manager.iD = ++maxId;
+
         } catch (IOException e) {
             throw new ManagerSaveException("Не удалось считать данные из файла.");
         }
-        // Проверка на существование файла
-        // открываем буфер с читателем
-        // Проверка пустоту файла
-        // читаем файл до первой пустой строки
-        // формируем список тасок или строк
-        // создаем таски в памяти менеджера
-        // считываем историю
-        // загружаем историю в память менеджера
-
         return manager;
     }
 
@@ -128,12 +121,11 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public void saveAnyTask(Task o) {
         super.saveAnyTask(o);
         save();
-
     }
 
     @Override
     public ArrayList<Task> getListOfAllTasks() {
-        ArrayList<Task> list = super.getListOfAllTasks();
+        ArrayList<Task> list =  super.getListOfAllTasks();
         return list;
     }
 
@@ -141,7 +133,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public void deleteAllTasks() {
         super.deleteAllTasks();
         save();
-
     }
 
     @Override
@@ -193,6 +184,5 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public void saveSubtasksInEpic(Epic epic, Subtask task) {
         super.saveSubtasksInEpic(epic, task);
         save();
-
     }
 }
