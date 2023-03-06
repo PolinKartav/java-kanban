@@ -12,11 +12,10 @@ public interface TaskManager {
     void saveAnyTask(Task o);
 
     //2.1 Получение списка всех задач.
-    ArrayList<Object> getListOfAllTasks();
+    List<Task> getListOfAllTasks();
 
     //2.2 Удаление всех задач;
-    void deleteAllTasks(ArrayList<Object> list);
-
+    void deleteAllTasks();
     //2.3 Получение по идентификатору;
     Task getTaskById(int id);
 
@@ -31,7 +30,7 @@ public interface TaskManager {
 
     //3. Дополнительные методы:
     //3.1 Получение списка всех подзадач определённого эпика.
-    ArrayList<Subtask> getAllSubtsksOfEpic(int id);
+    List<Subtask> getAllSubtasksOfEpic(int id);
 
     //4. Метод для управления статусом для эпик задач.
     void getStatusEpic();

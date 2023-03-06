@@ -3,13 +3,13 @@ package tasks;
 public class Task {
      private String name;
      private String description;
-     private int id;
+     private Integer id;
      private StatusChoice status;
-     private String type = "Task";
 
 
      //Конструктор для создания Task
-     public Task(String name, String description, StatusChoice status) {
+     public Task(int id, String name, String description, StatusChoice status) {
+         this.id = id;
          this.name = name;
          this.description = description;
          this.status = status;
@@ -41,17 +41,21 @@ public class Task {
         this.status = status;
     }
 
-    String getType(){
-        return type;
-    }
-
      @Override
      public String toString() {
          String result = "";
-         result =  getType() +":" +" Название = '" + name + "', Описание= '" + description +
+         result =  this.getClass().getName() + ":" +" Название = '" + name + "', Описание= '" + description +
                  "', Id = '" + id + "', Статус= '" + status + "'.";
          return   result;
      }
+     public String toSaveString(){
+         return String.valueOf(getId()) + "," +
+                 TaskType.TASK + "," +
+                 getName() + "," +
+                 getDescription() + "," +
+                 getStatus();
+     }
+
  }
 
 

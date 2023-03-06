@@ -21,10 +21,15 @@ public class InMemoryHistoryManager implements HistoryManager {
     public List<Task> getHistoryTasks() {
         return history.getTasks();
     }
+
+    @Override
+    public void clear() {
+        history.clear();
+    }
 }
 
 class CustomLinkedList<T>{
-    private Map<Integer, Node<T>> accordance; //соотвествие id Task с Node
+    private final Map<Integer, Node<T>> accordance; //соотвествие id Task с Node
     public Node<T> head;
     public Node<T> tail;
     private int size = 0;
@@ -97,5 +102,19 @@ class CustomLinkedList<T>{
 
         node.elem = null;
         size--;
+    }
+
+    void clear() {
+        for (Node<T> node = head; node != null; ) {
+            Node<T> next = node.next;
+            node.elem = null;
+            node.next = null;
+            node.prev = null;
+            node = next;
+        }
+        head = tail = null;
+        size = 0;
+
+        accordance.clear();
     }
 }

@@ -1,0 +1,18 @@
+id,type,name,description,status,epic
+0,TASK,Relax,Go to bed and sleep,DONE
+1,TASK,Having fun,Meet with friends,NEW
+8,TASK,Relax,Go to bed and sleep,DONE
+9,TASK,Having fun,Meet with friends,NEW
+2,EPIC,Похудеть,Сбросить вес,NEW
+3,EPIC,Бросить курить,Да просто не курить,NEW
+4,EPIC,Отдохнуть,посмотреть сериал,NEW
+10,EPIC,Похудеть,Сбросить вес,NEW
+11,EPIC,Бросить курить,Да просто не курить,NEW
+12,EPIC,Отдохнуть,посмотреть сериал,NEW
+5,SUBTASK,Заняться спортом,Делать зарядку,DONE,2
+6,SUBTASK,Следить за диетой,Не жрать после 6,IN_PROGRESS,2
+7,SUBTASK,Уменьшить колличество сахара,Пить кофе без сиропа,IN_PROGRESS,2
+13,SUBTASK,Заняться спортом,Делать зарядку,DONE,10
+14,SUBTASK,Следить за диетой,Не жрать после 6,IN_PROGRESS,10
+15,SUBTASK,Уменьшить колличество сахара,Пить кофе без сиропа,IN_PROGRESS,10
+
