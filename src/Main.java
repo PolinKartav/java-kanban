@@ -1,3 +1,4 @@
+import manager.HistoryManager;
 import manager.Managers;
 import manager.TaskManager;
 import tasks.Epic;
@@ -47,5 +48,9 @@ public class Main {
         System.out.println(manager.getListOfAllTasks() + "the end!!!!");
         Task task0 = manager.getTaskById(1);
         System.out.println("Task 0 is : " + task0);
+        //История хранится в менеджере, чтобы досать историю, как я поняла, нужно использовать текущего менеджера по ТЗ
+        //HistoryManager historyManager = Managers.getDefaultHistory();
+        System.out.println("!!!! History");
+        System.out.println(manager.getHistory());
     }
 }
