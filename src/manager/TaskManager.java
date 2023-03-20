@@ -3,6 +3,8 @@ package manager;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,4 +40,12 @@ public interface TaskManager {
     //5(new).возвращать последние 10 просмотренных задач
     List<Task> getHistory();
     void saveSubtasksInEpic(Epic epic, Subtask task);
+
+    //Расчитать время для выполнения Эпика
+    void setTimeOfEpic(Epic epic);
+
+    void removeAllSubtasksInEpic(int id);
+
+
+    ArrayList<Task> getPrioritizedTasks();
 }

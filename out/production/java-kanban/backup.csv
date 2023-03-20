@@ -1,11 +1,4 @@
 id,type,name,description,status,epic
-1,TASK,Relax,Go to bed and sleep,DONE
-2,TASK,Having fun,Meet with friends,NEW
-3,EPIC,Похудеть,Сбросить вес,NEW
-4,EPIC,Бросить курить,Да просто не курить,NEW
-7,EPIC,Отдохнуть,посмотреть сериал,NEW
-5,SUBTASK,Заняться спортом,Делать зарядку,DONE,3
-6,SUBTASK,Следить за диетой,Не жрать после 6,IN_PROGRESS,3
-7,SUBTASK,Уменьшить колличество сахара,Пить кофе без сиропа,IN_PROGRESS,3
+2,EPIC,Повеселетиться,Устроить тусу,NEW
+3,SUBTASK,Позвать компанию,Позвонить друзьям,DONE,2
 
-1

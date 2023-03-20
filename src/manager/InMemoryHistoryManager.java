@@ -4,7 +4,7 @@ import tasks.Task;
 import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    CustomLinkedList<Task> history;
+    public CustomLinkedList<Task> history;
     public InMemoryHistoryManager() {
         history = new CustomLinkedList<>();
     }
@@ -21,11 +21,13 @@ public class InMemoryHistoryManager implements HistoryManager {
     public List<Task> getHistoryTasks() {
         return history.getTasks();
     }
-
     @Override
-    public void clear() {
+    public void clearHistory(){
         history.clear();
     }
+
+
+    //Расчитать время для выполнения Эпика
 }
 
 class CustomLinkedList<T>{

@@ -1,22 +1,35 @@
 package tasks;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class Epic extends Task {
     public ArrayList<Subtask> subTasks;
+    private LocalDateTime endTime;
 
     //конструктор Epic
     public Epic(String nameEpic, String descriptionEpic){
         super(nameEpic, descriptionEpic);
         subTasks = new ArrayList<>();
     }
-
     public Epic(int id, String nameEpic, String descriptionEpic, StatusChoice status){
         super(id,nameEpic, descriptionEpic, StatusChoice.NEW);
         subTasks = new ArrayList<>();
     }
 
+    public Epic(int id, String nameEpic, String descriptionEpic, StatusChoice status, LocalDateTime startTime, long duration){
+        super(id,nameEpic, descriptionEpic, StatusChoice.NEW, startTime, duration);
+        subTasks = new ArrayList<>();
+    }
+    @Override
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
     //сохранение подзадач в список
     public void saveSubtasksInList(Subtask task){
         subTasks.add(task);
