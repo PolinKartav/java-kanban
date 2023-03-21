@@ -3,6 +3,7 @@ package managerTest;
 import manager.InMemoryHistoryManager;
 import manager.InMemoryTaskManager;
 import manager.TaskManager;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tasks.Epic;
 import tasks.StatusChoice;
@@ -16,23 +17,30 @@ import static org.junit.jupiter.api.Assertions.*;
 import static tasks.StatusChoice.DONE;
 import static tasks.StatusChoice.NEW;
 
-class InMemoryTaskManagerTest<T extends TaskManager>{
-    protected TaskManager manager = new InMemoryTaskManager();
+class InMemoryTaskManagerTest<T extends TaskManager> {
 
-    protected Task createTask(){
-        Task task = new Task(1,"Вкусно покушать", "Приготовить салат", NEW, LocalDateTime.of(1980, MAY, 16, 3, 6), 3 );
-        return task;
-    }
-    protected Epic createEpic(){
-        Epic epic = new Epic(2,"Повеселетиться", "Устроить тусу", NEW );
+        protected TaskManager manager;
+        @BeforeEach
+        public void beforeEach(){
+            manager = new InMemoryTaskManager();
+        }
+
+        protected Task createTask(){
+            Task task = new Task(1, "Вкусно покушать", "Приготовить салат", NEW, LocalDateTime.of(1980, MAY, 16, 3, 6), 3);
+            return task;
+        }
+
+        protected Epic createEpic() {
+        Epic epic = new Epic(2, "Повеселетиться", "Устроить тусу", NEW);
         return epic;
-    }
-    protected Subtask createSubtask(){
-        Subtask subtask = new Subtask(3, 2, "Позвать компанию", "Позвонить друзьям", DONE, LocalDateTime.of(2000, MAY, 16, 3, 6), 19);
-        return subtask;
-    }
+        }
 
-    // getListOfAllTasks
+        protected Subtask createSubtask() {
+            Subtask subtask = new Subtask(3, 2, "Позвать компанию", "Позвонить друзьям", DONE, LocalDateTime.of(2000, MAY, 16, 3, 6), 19);
+            return subtask;
+        }
+
+
     @Test
     void shouldGetList(){
         ArrayList<Task> allTasks = new ArrayList<>();
@@ -170,6 +178,7 @@ class InMemoryTaskManagerTest<T extends TaskManager>{
         listSubtasks.add(subtask);
         assertEquals(listSubtasks.toString(), manager.getAllSubtasksOfEpic(2).toString(), "Список Subtasks у Epic");
         Epic epic1 = new Epic(6,"Повеселетиться", "Устроить тусу", DONE);
+
         manager.saveAnyTask(epic1);
         assertEquals(null, manager.getAllSubtasksOfEpic(6), "Пустой лист Subtasks");
         Subtask subtask1 = new Subtask(3, 2, "Позвать компанию", "Позвонить друзьям", DONE, LocalDateTime.of(2000, MAY, 16, 3, 6), 10);
@@ -224,12 +233,4 @@ class InMemoryTaskManagerTest<T extends TaskManager>{
         assertEquals(createTask().toString(), manager.getPrioritizedTasks().get(0).toString(), "Список правильно отсортирован");
         assertEquals(createSubtask().toString(), manager.getPrioritizedTasks().get(1).toString(), "Список правильно отсортирован");
     }
-
-
-
-
-
-
-
-
 }

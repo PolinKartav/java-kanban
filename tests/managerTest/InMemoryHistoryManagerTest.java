@@ -4,6 +4,7 @@ import manager.HistoryManager;
 import manager.InMemoryHistoryManager;
 import manager.InMemoryTaskManager;
 import manager.TaskManager;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tasks.Epic;
 import tasks.Subtask;
@@ -18,8 +19,14 @@ import static tasks.StatusChoice.DONE;
 import static tasks.StatusChoice.NEW;
 
 public class InMemoryHistoryManagerTest <T extends HistoryManager>{
-    protected HistoryManager manager = new InMemoryHistoryManager();
-    protected TaskManager managerTask = new InMemoryTaskManager();
+
+    protected HistoryManager manager;
+    protected TaskManager managerTask;
+    @BeforeEach
+    public void beforeEach(){
+        manager = new InMemoryHistoryManager();
+        managerTask = new InMemoryTaskManager();
+    }
     protected Task createTask(){
         Task task = new Task(1,"Вкусно покушать", "Приготовить салат", NEW, LocalDateTime.of(1980, MAY, 16, 3, 6), 3 );
         return task;

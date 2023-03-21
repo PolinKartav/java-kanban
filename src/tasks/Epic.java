@@ -22,6 +22,9 @@ public class Epic extends Task {
         super(id,nameEpic, descriptionEpic, StatusChoice.NEW, startTime, duration);
         subTasks = new ArrayList<>();
     }
+    public ArrayList getSubtask(){
+        return this.subTasks;
+    }
     @Override
     public LocalDateTime getEndTime() {
         return endTime;
@@ -64,10 +67,7 @@ public class Epic extends Task {
     }
     @Override
     public String toSaveString(){
-        return String.valueOf(getId()) + "," +
-                TaskType.EPIC + "," +
-                getName() + "," +
-                getDescription() + "," +
-                getStatus();
+        String result  = super.toSaveString();
+        return result;
     }
 }

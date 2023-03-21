@@ -3,6 +3,7 @@ package managerTest;
 import manager.FileBackedTasksManager;
 import manager.Managers;
 import manager.TaskManager;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tasks.Epic;
 import tasks.Subtask;
@@ -16,7 +17,13 @@ import static tasks.StatusChoice.NEW;
 
 class FileBackedTasksManagerTest {
     private Path path = Path.of("resources/backup.csv");
-    TaskManager manager = Managers.getFileManager(path);
+    TaskManager manager;
+    @BeforeEach
+    public TaskManager beforeEach(){
+         manager = Managers.getFileManager(path);
+        return manager;
+    }
+
     protected Task createTask(){
         Task task = new Task(1,"Вкусно покушать", "Приготовить салат", NEW, LocalDateTime.of(1980, MAY, 16, 3, 6), 3 );
         return task;

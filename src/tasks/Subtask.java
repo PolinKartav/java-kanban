@@ -28,11 +28,7 @@ public class Subtask extends Task {
     }
     @Override
     public String toSaveString(){
-        return String.valueOf(getId()) + "," +
-                TaskType.SUBTASK + "," +
-                getName() + "," +
-                getDescription() + "," +
-                getStatus() + "," +
-                getParentEpicId();
+        String result = super.toSaveString();
+        return result;
     }
 }

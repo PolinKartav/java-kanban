@@ -244,7 +244,7 @@ public class InMemoryTaskManager implements TaskManager{
     }
 
 
-
+    //метод, который возвращает список задач по времени старта
     public ArrayList<Task> getPrioritizedTasks(){
 
         if(!taskSave.isEmpty()){
@@ -262,7 +262,5 @@ public class InMemoryTaskManager implements TaskManager{
 
         return new ArrayList<Task>(tree);
     }
-
-
-
+    
 }
