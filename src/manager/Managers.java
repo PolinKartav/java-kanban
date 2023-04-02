@@ -1,5 +1,6 @@
 package manager;
 
+import server.HttpTaskManager;
 import tasks.Task;
 
 import java.nio.file.Path;
@@ -10,6 +11,10 @@ public class Managers {
     public static TaskManager getDefault(){
 
         return new InMemoryTaskManager();
+    }
+
+    public static HttpTaskManager getDefaultTaskManager(){
+        return new HttpTaskManager();
     }
 
     public static TaskManager getFileManager(Path path) {
