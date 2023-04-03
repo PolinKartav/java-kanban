@@ -2,26 +2,29 @@ package server;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.URL;
+import java.nio.file.Path;
 
+import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
-import server.adapter.TaskAdapter;
 import tasks.Epic;
+
 import tasks.Subtask;
 import tasks.Task;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static manager.Managers.getDefaultTaskManager;
+
 
 public class HttpTaskServer {
-    public static final int PORT = 8275;
+    public static final int PORT = 8276;
     private final String apiToken;
     private final HttpServer server;
-    private HttpTaskManager httpTaskManager = getDefaultTaskManager();
+    private HttpTaskManager httpTaskManager;
 
-    TaskAdapter taskAdapter = new TaskAdapter();
+    private Gson gson = new Gson();
 
-    public HttpTaskServer() throws IOException {
+    public HttpTaskServer(HttpTaskManager manager) throws IOException {
         apiToken = generateApiToken();
         server = HttpServer.create(new InetSocketAddress("0.0.0.0", PORT), 0);
         server.createContext("/register", this::register);
@@ -30,6 +33,7 @@ public class HttpTaskServer {
         server.createContext("/load/subtask", this::saveNewSubTask);
         server.createContext("/history", this::getHistory);
         server.createContext("/epic/remove/subtask", this::removeAllSubtasksInEpic);
+        httpTaskManager = manager;
     }
 
     private void saveNewTask(HttpExchange h) throws IOException {
@@ -54,7 +58,9 @@ public class HttpTaskServer {
                     h.sendResponseHeaders(400, 0);
                     return;
                 }
-                Task task = taskAdapter.parseTask(value);
+                Task task = this.gson.fromJson(value, Task.class);
+                httpTaskManager.save("Add task = " + task.toString());
+                //Task task = taskAdapter.parseTask(value);
                 httpTaskManager.saveAnyTask(task);
                 System.out.println("Task успешно добавлена!");
                 System.out.println("Добавленная таска: " + httpTaskManager.getTaskById(task.getId()).toString() + "\n\n\n");
@@ -63,6 +69,8 @@ public class HttpTaskServer {
                 System.out.println("/save ждёт POST-запрос, а получил: " + h.getRequestMethod());
                 h.sendResponseHeaders(405, 0);
             }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         } finally {
             h.close();
         }
@@ -99,8 +107,9 @@ public class HttpTaskServer {
                     h.sendResponseHeaders(400, 0);
                     return;
                 }
-                Epic epic = taskAdapter.parseEpic(value);
+                Epic epic = this.gson.fromJson(value, Epic.class);
                 httpTaskManager.saveAnyTask(epic);
+                httpTaskManager.save("Add epic  = " + epic.toString());
                 System.out.println("Epic успешно добавлен!");
                 System.out.println("Добавленный epic: " + httpTaskManager.getTaskById(epic.getId()).toString() + "\n\n\n");
                 h.sendResponseHeaders(200, 0);
@@ -108,6 +117,8 @@ public class HttpTaskServer {
                 System.out.println("/save ждёт POST-запрос, а получил: " + h.getRequestMethod());
                 h.sendResponseHeaders(405, 0);
             }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         } finally {
             h.close();
         }
@@ -135,10 +146,11 @@ public class HttpTaskServer {
                     h.sendResponseHeaders(400, 0);
                     return;
                 }
-                Subtask subtask = taskAdapter.parseSubtask(value);
+                Subtask subtask = this.gson.fromJson(value, Subtask.class);
                 httpTaskManager.saveAnyTask(subtask);
                 httpTaskManager.saveSubtasksInEpic((Epic) httpTaskManager.getTaskById(subtask.getParentEpicId()), subtask);
                 httpTaskManager.setTimeOfEpic((Epic) httpTaskManager.getTaskById(subtask.getParentEpicId()));
+                httpTaskManager.save("Add subtask = " + subtask.toString());
                 System.out.println("Subtask успешно добавлен!");
                 System.out.println("Добавленный subtask: " + httpTaskManager.getTaskById(subtask.getId()).toString() + "\n");
                 System.out.println("Обновленный epic" + ((Epic) httpTaskManager.getTaskById(subtask.getParentEpicId())) + "\n\n\n");
@@ -147,6 +159,8 @@ public class HttpTaskServer {
                 System.out.println("/save ждёт POST-запрос, а получил: " + h.getRequestMethod());
                 h.sendResponseHeaders(405, 0);
             }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         } finally {
             h.close();
         }
@@ -157,11 +171,13 @@ public class HttpTaskServer {
             System.out.println("\n/history");
             if ("GET".equals(h.getRequestMethod())) {
                 System.out.println("\n\n\n--------- All actions -----------\n");
-                httpTaskManager.getHistory().forEach(task -> System.out.println(task.toString()));
+                System.out.println(httpTaskManager.load());
             } else {
                 System.out.println("/history ждёт GET-запрос, а получил " + h.getRequestMethod());
                 h.sendResponseHeaders(405, 0);
             }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         } finally {
             h.close();
         }

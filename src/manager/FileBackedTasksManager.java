@@ -18,6 +18,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public FileBackedTasksManager(Path path) {
         this.path = path;
     }
+    public FileBackedTasksManager(){}
 
     public void save() {
         if (!Files.exists(path)) {

@@ -1,8 +1,10 @@
 package manager;
 
 import server.HttpTaskManager;
+import server.HttpTaskServer;
 import tasks.Task;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -13,8 +15,8 @@ public class Managers {
         return new InMemoryTaskManager();
     }
 
-    public static HttpTaskManager getDefaultTaskManager(){
-        return new HttpTaskManager();
+    public static HttpTaskServer getDefaultHttpTaskServer(HttpTaskManager manager) throws IOException {
+        return new HttpTaskServer(manager);
     }
 
     public static TaskManager getFileManager(Path path) {

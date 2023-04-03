@@ -1,11 +1,15 @@
-import client.KVClient;
+import client.HttpClient;
+import manager.Managers;
+import server.HttpTaskManager;
 import server.HttpTaskServer;
+import server.KVServer;
 import tasks.Epic;
 import tasks.StatusChoice;
 import tasks.Subtask;
 import tasks.Task;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.Month;
 
@@ -13,10 +17,16 @@ import static java.util.Calendar.MAY;
 
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
-        HttpTaskServer server = new HttpTaskServer();
+        Path path = Path.of("resources/http-backup.csv");
+
+        KVServer kvServer = new KVServer("0.0.0.0", 7587);
+        kvServer.start();
+
+        HttpTaskManager taskManager = new HttpTaskManager("http://0.0.0.0:7587", path);
+        HttpTaskServer server = Managers.getDefaultHttpTaskServer(taskManager);
         server.start();
 
-        KVClient client = new KVClient();
+        HttpClient client = new HttpClient();
         String apiToken = client.register();
         client.createTask(newTask(), apiToken);
         client.createEpic(newEpic(), apiToken);
