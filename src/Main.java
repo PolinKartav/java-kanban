@@ -19,10 +19,10 @@ public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
         Path path = Path.of("resources/http-backup.csv");
 
-        KVServer kvServer = new KVServer("0.0.0.0", 7587);
+        KVServer kvServer = new KVServer("0.0.0.0", 7586);
         kvServer.start();
 
-        HttpTaskManager taskManager = new HttpTaskManager("http://0.0.0.0:7587", path);
+        HttpTaskManager taskManager = new HttpTaskManager("http://0.0.0.0:7586", path);
         HttpTaskServer server = Managers.getDefaultHttpTaskServer(taskManager);
         server.start();
 

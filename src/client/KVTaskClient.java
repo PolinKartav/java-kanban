@@ -26,19 +26,19 @@ public class KVTaskClient {
         return response.body();
     }
 
-    public void saveToKVServer(String token, String key) throws IOException, InterruptedException {
+    public void saveToKVServer(String token, String key, String json) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create(stringUrl + "/save/?API_TOKEN=" + token);
-        Gson gson = new Gson();
-        String json = gson.toJson(key);
+        URI url = URI.create(stringUrl + "/save/" + key + "?API_TOKEN=" + token);
+//        Gson gson = new Gson();
+//        String json = gson.toJson(key);
         final HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(json);
         HttpRequest request = HttpRequest.newBuilder().uri(url).POST(body).build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
-    public String loadFromKVServer(String token) throws IOException, InterruptedException {
+    public String loadFromKVServer(String token, String key) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create(stringUrl + "/load/?API_TOKEN=" + token);
+        URI url = URI.create(stringUrl + "/load/" + key + "?API_TOKEN=" + token);
         HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         return response.body();

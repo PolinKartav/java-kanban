@@ -2,22 +2,17 @@ package server;
 
 import client.KVTaskClient;
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 import manager.FileBackedTasksManager;
-import manager.Managers;
-import manager.TaskManager;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
 
 
 import java.io.IOException;
-import java.net.URL;
+import java.lang.reflect.Type;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 public class HttpTaskManager extends FileBackedTasksManager {
 
@@ -28,6 +23,8 @@ public class HttpTaskManager extends FileBackedTasksManager {
 
     static String apiToken = new String();
 
+    Gson gson = new Gson();
+
 
     public HttpTaskManager(String url, Path path) {
         super(path);
@@ -35,17 +32,67 @@ public class HttpTaskManager extends FileBackedTasksManager {
         kvTaskClient = new KVTaskClient(url);
     }
 
-    public void save(String key) throws IOException, InterruptedException {
+    @Override
+    public void save() {
         if (apiToken.isEmpty()){
-            this.apiToken = kvTaskClient.registerToKVServer();
+            try {
+                this.apiToken = kvTaskClient.registerToKVServer();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
-        kvTaskClient.saveToKVServer(apiToken, key);
+        if (!taskSave.isEmpty()){
+            try {
+                kvTaskClient.saveToKVServer(apiToken, "task", gson.toJson(taskSave));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        if (!epicSave.isEmpty()){
+            try {
+                kvTaskClient.saveToKVServer(apiToken, "epic", gson.toJson(epicSave));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        if (!subtaskSave.isEmpty()){
+            try {
+                kvTaskClient.saveToKVServer(apiToken, "subtask", gson.toJson(subtaskSave));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
-    public String load() throws IOException, InterruptedException {
+    public void load() throws IOException, InterruptedException {
         if (apiToken.isEmpty()){
             this.apiToken = kvTaskClient.registerToKVServer();
         }
-        return kvTaskClient.loadFromKVServer(apiToken);
+        String stringTask = kvTaskClient.loadFromKVServer(apiToken, "task");
+        Type empMapTypeTask = new TypeToken<Map<Integer, Task>>() {}.getType();
+        Map<Integer, Task> tasks = gson.fromJson(stringTask, empMapTypeTask);
+        if (!tasks.isEmpty()){
+            taskSave = tasks;
+        }
+        String stringEpic = kvTaskClient.loadFromKVServer(apiToken, "epic");
+        Type empMapTypeEpic = new TypeToken<Map<Integer, Epic>>() {}.getType();
+        Map<Integer, Epic> epics = gson.fromJson(stringEpic, empMapTypeEpic);
+        if (!epics.isEmpty()){
+            epicSave = epics;
+        }
+        String stringSub = kvTaskClient.loadFromKVServer(apiToken, "subtask");
+        Type empMapTypeSub = new TypeToken<Map<Integer, Subtask>>() {}.getType();
+        Map<Integer, Subtask> subs = gson.fromJson(stringSub, empMapTypeSub);
+        if (!subs.isEmpty()){
+            subtaskSave = subs;
+        }
     }
 }

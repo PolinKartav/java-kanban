@@ -1,12 +1,18 @@
 package server;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
+import tasks.Task;
 
 
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.lang.reflect.Type;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -17,6 +23,8 @@ public class KVServer {
     protected String apiToken;
     private final HttpServer server;
     public final Map<String, String> data = new HashMap<>();
+
+    Gson gson = new Gson();
 
     public KVServer(String hostname, int port) throws IOException {
         server = HttpServer.create(new InetSocketAddress(hostname, port), 0);
@@ -48,6 +56,7 @@ public class KVServer {
                 }
 
                 sendText(h, data.get(key));
+                data.forEach((keyy, value) -> System.out.println("\n KEY =" + keyy + "   VALUE = " + value));
             } else {
                 h.sendResponseHeaders(405, 0);
             }
@@ -70,13 +79,18 @@ public class KVServer {
                     h.sendResponseHeaders(400, 0);
                     return;
                 }
-
                 String value = readText(h);
 
                 if (value.isEmpty()) {
                     h.sendResponseHeaders(400, 0);
                     return;
                 }
+
+//                Type empMapType = new TypeToken<Map<String, Task>>() {}.getType();
+//
+//                Map<String, Task> tasks = gson.fromJson(value, empMapType);
+
+
 
                 data.put(key, value);
                 h.sendResponseHeaders(200, 0);

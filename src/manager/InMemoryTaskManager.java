@@ -6,10 +6,10 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager{
-    Map<Integer, Task> taskSave;
-    Map<Integer, Epic> epicSave;
-    Map<Integer, Subtask> subtaskSave;
-    TreeSet<Task> tree;
+    public Map<Integer, Task> taskSave;
+    public Map<Integer, Epic> epicSave;
+    public Map<Integer, Subtask> subtaskSave;
+    public TreeSet<Task> tree;
 
 
 

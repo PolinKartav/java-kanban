@@ -17,7 +17,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 
 public class HttpTaskServer {
-    public static final int PORT = 8276;
+    public static final int PORT = 8274;
     private final String apiToken;
     private final HttpServer server;
     private HttpTaskManager httpTaskManager;
@@ -59,18 +59,17 @@ public class HttpTaskServer {
                     return;
                 }
                 Task task = this.gson.fromJson(value, Task.class);
-                httpTaskManager.save("Add task = " + task.toString());
+                //httpTaskManager.save("task");
                 //Task task = taskAdapter.parseTask(value);
                 httpTaskManager.saveAnyTask(task);
                 System.out.println("Task успешно добавлена!");
                 System.out.println("Добавленная таска: " + httpTaskManager.getTaskById(task.getId()).toString() + "\n\n\n");
+                //httpTaskManager.save();
                 h.sendResponseHeaders(200, 0);
             } else {
                 System.out.println("/save ждёт POST-запрос, а получил: " + h.getRequestMethod());
                 h.sendResponseHeaders(405, 0);
             }
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         } finally {
             h.close();
         }
@@ -109,7 +108,7 @@ public class HttpTaskServer {
                 }
                 Epic epic = this.gson.fromJson(value, Epic.class);
                 httpTaskManager.saveAnyTask(epic);
-                httpTaskManager.save("Add epic  = " + epic.toString());
+                //httpTaskManager.save();
                 System.out.println("Epic успешно добавлен!");
                 System.out.println("Добавленный epic: " + httpTaskManager.getTaskById(epic.getId()).toString() + "\n\n\n");
                 h.sendResponseHeaders(200, 0);
@@ -117,8 +116,6 @@ public class HttpTaskServer {
                 System.out.println("/save ждёт POST-запрос, а получил: " + h.getRequestMethod());
                 h.sendResponseHeaders(405, 0);
             }
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         } finally {
             h.close();
         }
@@ -150,11 +147,12 @@ public class HttpTaskServer {
                 httpTaskManager.saveAnyTask(subtask);
                 httpTaskManager.saveSubtasksInEpic((Epic) httpTaskManager.getTaskById(subtask.getParentEpicId()), subtask);
                 httpTaskManager.setTimeOfEpic((Epic) httpTaskManager.getTaskById(subtask.getParentEpicId()));
-                httpTaskManager.save("Add subtask = " + subtask.toString());
+                //httpTaskManager.save();
                 System.out.println("Subtask успешно добавлен!");
                 System.out.println("Добавленный subtask: " + httpTaskManager.getTaskById(subtask.getId()).toString() + "\n");
                 System.out.println("Обновленный epic" + ((Epic) httpTaskManager.getTaskById(subtask.getParentEpicId())) + "\n\n\n");
                 h.sendResponseHeaders(200, 0);
+                httpTaskManager.load();
             } else {
                 System.out.println("/save ждёт POST-запрос, а получил: " + h.getRequestMethod());
                 h.sendResponseHeaders(405, 0);
@@ -171,7 +169,7 @@ public class HttpTaskServer {
             System.out.println("\n/history");
             if ("GET".equals(h.getRequestMethod())) {
                 System.out.println("\n\n\n--------- All actions -----------\n");
-                System.out.println(httpTaskManager.load());
+                httpTaskManager.load();
             } else {
                 System.out.println("/history ждёт GET-запрос, а получил " + h.getRequestMethod());
                 h.sendResponseHeaders(405, 0);
